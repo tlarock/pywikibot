@@ -4,9 +4,9 @@ from pywikibot.comms.eventstreams import EventStreams
 ts_format = "%Y-%m-%dT%H:%M:%SZ"
 
 # Start time for stream events
-since = "2022-06-23T00:00:00Z"
+since = "2022-07-15T00:00:00Z"
 # Time to stop streaming events
-endtime = "2022-06-26T00:00:00Z"
+endtime = "2022-07-18T00:00:00Z"
 
 # endtime a datetime object
 end_ts = datetime.datetime.strptime(endtime, ts_format)
@@ -43,8 +43,8 @@ with open(output_file, 'w') as fout:
         # Returns a dictionary of the event/JSON object
         change = next(iter(stream))
 
-        # Filter out non-article pages
-        if change["page_namespace"] != 0:
+        # Filter out non-article pages and redirects
+        if change["page_namespace"] != 0 or change["page_is_redirect"]:
             continue
 
         # Filter out non-english wikipedia pages
