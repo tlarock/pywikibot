@@ -4,9 +4,9 @@ from pywikibot.comms.eventstreams import EventStreams
 ts_format = "%Y-%m-%dT%H:%M:%SZ"
 
 # Start time for stream events
-since = "2022-07-15T00:00:00Z"
+since = "2022-07-27T00:00:00Z"
 # Time to stop streaming events
-endtime = "2022-07-18T00:00:00Z"
+endtime = "2022-07-29T00:00:00Z"
 
 # endtime a datetime object
 end_ts = datetime.datetime.strptime(endtime, ts_format)
@@ -35,7 +35,7 @@ break_loop = {key:False for key in ["ADDED", "DELETED", "LINK"]}
 events_streamed = 0
 print_interval = 10_000
 print_counter = 0
-
+all_changes = []
 # Open the output file for writing
 with open(output_file, 'w') as fout:
     while True:
@@ -53,6 +53,8 @@ with open(output_file, 'w') as fout:
         if "en.wikipedia" not in change["meta"]["uri"]:
             continue
 
+        # NOTE: Temporarily saving output
+        all_changes.append(change)
 
         # Get the event type from $schema
         if "create" in change["$schema"]:
@@ -104,3 +106,7 @@ with open(output_file, 'w') as fout:
         if print_counter == print_interval:
             print(datetime.datetime.now(), " Streamed: ", events_streamed)
             print_counter = 0
+
+import pickle
+with open("../wiki-eventstreaming/data/pickles/events_since-" + since + "_end-" + endtime + ".pickle", "wb") as fout:
+    pickle.dump(all_changes, fout)
