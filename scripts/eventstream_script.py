@@ -1,5 +1,12 @@
-import datetime
+import datetime, requests
 from pywikibot.comms.eventstreams import EventStreams
+
+def get_latest_revision(page_title):
+    api_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&continue=&titles="
+    r = requests.get(api_url + page_title)
+    js = r.json()
+    rev_info = js['query']['pages'][next(iter(js['query']['pages']))]['revisions'][0]
+    return rev_info['revid'], rev_info['timestamp']
 
 ts_format = "%Y-%m-%dT%H:%M:%SZ"
 
